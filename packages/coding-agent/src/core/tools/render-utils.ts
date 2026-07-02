@@ -33,8 +33,8 @@ export function getTextOutput(
 ): string {
 	if (!result) return "";
 
-	const textBlocks = result.content.filter((c) => c.type === "text");
-	const imageBlocks = result.content.filter((c) => c.type === "image");
+	const textBlocks = (result.content || []).filter((c) => c.type === "text");
+	const imageBlocks = (result.content || []).filter((c) => c.type === "image");
 
 	let output = textBlocks.map((c) => sanitizeBinaryOutput(stripAnsi(c.text || "")).replace(/\r/g, "")).join("\n");
 

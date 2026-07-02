@@ -557,7 +557,7 @@ export class AgentSession {
 	/** Extract text content from a message */
 	private _getUserMessageText(message: Message): string {
 		if (message.role !== "user") return "";
-		const content = message.content;
+		const content = message.content || [];
 		if (typeof content === "string") return content;
 		const textBlocks = content.filter((c) => c.type === "text");
 		return textBlocks.map((c) => (c as TextContent).text).join("");
@@ -2897,7 +2897,7 @@ export class AgentSession {
 		for (const message of state.messages) {
 			if (message.role === "assistant") {
 				const assistantMsg = message as AssistantMessage;
-				toolCalls += assistantMsg.content.filter((c) => c.type === "toolCall").length;
+				toolCalls += (assistantMsg.content || []).filter((c) => c.type === "toolCall").length;
 				totalInput += assistantMsg.usage.input;
 				totalOutput += assistantMsg.usage.output;
 				totalCacheRead += assistantMsg.usage.cacheRead;
@@ -3057,7 +3057,7 @@ export class AgentSession {
 		if (!lastAssistant) return undefined;
 
 		let text = "";
-		for (const content of (lastAssistant as AssistantMessage).content) {
+		for (const content of ((lastAssistant as AssistantMessage).content || [])) {
 			if (content.type === "text") {
 				text += content.text;
 			}

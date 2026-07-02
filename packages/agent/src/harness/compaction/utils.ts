@@ -25,7 +25,7 @@ export function extractFileOpsFromMessage(message: AgentMessage, fileOps: FileOp
 	if (message.role !== "assistant") return;
 	if (!("content" in message) || !Array.isArray(message.content)) return;
 
-	for (const block of message.content) {
+	if (Array.isArray(message.content)) for (const block of message.content) {
 		if (typeof block !== "object" || block === null) continue;
 		if (!("type" in block) || block.type !== "toolCall") continue;
 		if (!("arguments" in block) || !("name" in block)) continue;
@@ -106,7 +106,7 @@ export function serializeConversation(messages: Message[]): string {
 			const thinkingParts: string[] = [];
 			const toolCalls: string[] = [];
 
-			for (const block of msg.content) {
+			for (const block of (msg.content || [])) {
 				if (block.type === "text") {
 					textParts.push(block.text);
 				} else if (block.type === "thinking") {
