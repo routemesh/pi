@@ -489,7 +489,7 @@ function toChatMessages(messages: Message[], supportsImages: boolean): ChatCompl
 				result.push({ role: "user", content: sanitizeSurrogates(msg.content) });
 				continue;
 			}
-			const hadImages = msg.content.some((item) => item.type === "image");
+			const hadImages = (msg.content || []).some((item) => item.type === "image");
 			const content: ContentChunk[] = msg.content
 				.filter((item) => item.type === "text" || supportsImages)
 				.map((item) => {

@@ -51,7 +51,7 @@ function hasToolHistory(messages: Message[]): boolean {
 			return true;
 		}
 		if (msg.role === "assistant") {
-			if (msg.content.some((block) => block.type === "toolCall")) {
+			if ((msg.content || []).some((block) => block.type === "toolCall")) {
 				return true;
 			}
 		}
@@ -788,7 +788,7 @@ export function convertMessages(
 					content: sanitizeSurrogates(msg.content),
 				});
 			} else {
-				const content: ChatCompletionContentPart[] = msg.content.map((item): ChatCompletionContentPart => {
+				const content: ChatCompletionContentPart[] = (msg.content || []).map((item): ChatCompletionContentPart => {
 					if (item.type === "text") {
 						return {
 							type: "text",
@@ -866,7 +866,7 @@ export function convertMessages(
 				assistantMsg.content = assistantText;
 			}
 
-			const toolCalls = msg.content.filter(isToolCallBlock);
+			const toolCalls = (msg.content || []).filter(isToolCallBlock);
 			if (toolCalls.length > 0) {
 				assistantMsg.tool_calls = toolCalls.map((tc) => ({
 					id: tc.id,
@@ -922,7 +922,7 @@ export function convertMessages(
 					.filter(isTextContentBlock)
 					.map((block) => block.text)
 					.join("\n");
-				const hasImages = toolMsg.content.some((c) => c.type === "image");
+				const hasImages = (toolMsg.content || []).some((c) => c.type === "image");
 
 				// Always send tool result with text (or placeholder if only images)
 				const hasText = textResult.length > 0;
@@ -938,7 +938,7 @@ export function convertMessages(
 				params.push(toolResultMsg);
 
 				if (hasImages && model.input.includes("image")) {
-					for (const block of toolMsg.content) {
+					for (const block of (toolMsg.content || [])) {
 						if (isImageContentBlock(block)) {
 							imageBlocks.push({
 								type: "image_url",

@@ -135,7 +135,7 @@ export async function runPrintMode(runtimeHost: AgentSessionRuntime, options: Pr
 					console.error(assistantMsg.errorMessage || `Request ${assistantMsg.stopReason}`);
 					exitCode = 1;
 				} else {
-					for (const content of assistantMsg.content) {
+					for (const content of (assistantMsg.content || [])) {
 						if (content.type === "text") {
 							writeRawStdout(`${content.text}\n`);
 						}

@@ -11,10 +11,10 @@ export function inferCopilotInitiator(messages: Message[]): "user" | "agent" {
 export function hasCopilotVisionInput(messages: Message[]): boolean {
 	return messages.some((msg) => {
 		if (msg.role === "user" && Array.isArray(msg.content)) {
-			return msg.content.some((c) => c.type === "image");
+			return (msg.content || []).some((c) => c.type === "image");
 		}
 		if (msg.role === "toolResult" && Array.isArray(msg.content)) {
-			return msg.content.some((c) => c.type === "image");
+			return (msg.content || []).some((c) => c.type === "image");
 		}
 		return false;
 	});

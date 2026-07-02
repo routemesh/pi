@@ -105,7 +105,7 @@ export function convertMessages<T extends GoogleApiType>(model: Model<T>, contex
 					parts: [{ text: sanitizeSurrogates(msg.content) }],
 				});
 			} else {
-				const parts: Part[] = msg.content.map((item) => {
+				const parts: Part[] = (msg.content || []).map((item) => {
 					if (item.type === "text") {
 						return { text: sanitizeSurrogates(item.text) };
 					} else {
@@ -128,7 +128,7 @@ export function convertMessages<T extends GoogleApiType>(model: Model<T>, contex
 			// Check if message is from same provider and model - only then keep thinking blocks
 			const isSameProviderAndModel = msg.provider === model.provider && msg.model === model.id;
 
-			for (const block of msg.content) {
+			for (const block of (msg.content || [])) {
 				if (block.type === "text") {
 					// Skip empty text blocks
 					if (!block.text || block.text.trim() === "") continue;
@@ -175,7 +175,7 @@ export function convertMessages<T extends GoogleApiType>(model: Model<T>, contex
 			});
 		} else if (msg.role === "toolResult") {
 			// Extract text and image content
-			const textContent = msg.content.filter((c): c is TextContent => c.type === "text");
+			const textContent = (msg.content || []).filter((c): c is TextContent => c.type === "text");
 			const textResult = textContent.map((c) => c.text).join("\n");
 			const imageContent = model.input.includes("image")
 				? msg.content.filter((c): c is ImageContent => c.type === "image")
